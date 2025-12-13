@@ -1,24 +1,26 @@
 <mat-drawer-container>
   <mat-drawer mode="side" [opened]="drawerOpened()">
     <aside>
-      <header>
-        <button mat-icon-button (click)="closeDrawer()">
-          <mat-icon>chevron_left</mat-icon>
-        </button>
-      </header>
+      <app-add-entry-form />
     </aside>
   </mat-drawer>
 
   <mat-drawer-content>
     <header>
       <nav>
-        <button mat-icon-button (click)="openDrawer()">
+        <button mat-icon-button (click)="toggleDrawer()">
           <mat-icon>menu</mat-icon>
         </button>
       </nav>
     </header>
     <main>
-
+      @for (entry of entries(); track entry.id) {
+        <div>
+          <span>{{ entry.amount }}</span> -
+          <span>{{ entry.category }}</span> -
+          <span>{{ entry.date }}</span>
+        </div>
+      }
     </main>
   </mat-drawer-content>
 </mat-drawer-container>

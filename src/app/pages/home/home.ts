@@ -1,23 +1,33 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal, viewChild } from '@angular/core';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { AddEntryForm } from './components/add-entry-form/add-entry-form';
+import { BudgetService } from '../../data-access/budget.service';
 
 @Component({
   selector: 'app-home',
-  imports: [MatDrawer, MatDrawerContainer, MatDrawerContent, MatIconButton, MatIcon],
+  imports: [AddEntryForm, MatDrawer, MatDrawerContainer, MatDrawerContent, MatIconButton, MatIcon],
   templateUrl: './home.html',
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Home {
-  drawerOpened = signal(true);
+  protected entries = inject(BudgetService).entries;
+  protected drawerOpened = signal(true);
+  private addEntryForm = viewChild(AddEntryForm);
 
-  closeDrawer() {
-    this.drawerOpened.set(false);
+  constructor() {
+    effect(() => {
+      if (this.drawerOpened()) {
+        setTimeout(() => {
+          this.addEntryForm()?.focusAmountInput();
+        });
+      }
+    });
   }
 
-  openDrawer() {
-    this.drawerOpened.set(true);
+  toggleDrawer() {
+    this.drawerOpened.update(opened => !opened);
   }
 }
