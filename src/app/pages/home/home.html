@@ -1,1 +1,24 @@
-<p>home works!</p>
+<mat-drawer-container>
+  <mat-drawer mode="side" [opened]="drawerOpened()">
+    <aside>
+      <header>
+        <button mat-icon-button (click)="closeDrawer()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+      </header>
+    </aside>
+  </mat-drawer>
+
+  <mat-drawer-content>
+    <header>
+      <nav>
+        <button mat-icon-button (click)="openDrawer()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </nav>
+    </header>
+    <main>
+
+    </main>
+  </mat-drawer-content>
+</mat-drawer-container>
