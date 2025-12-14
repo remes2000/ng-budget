@@ -5,7 +5,7 @@ import { MatButton } from '@angular/material/button';
 import { Field, form, min, required } from '@angular/forms/signals';
 import { JsonPipe } from '@angular/common';
 import { BudgetService } from '@data-access/budget.service';
-import { SelectCategory } from './controls/select-category/select-category';
+import { SelectCategory } from '@controls/select-category/select-category';
 
 @Component({
   selector: 'app-add-entry-form',

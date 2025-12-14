@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, model, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, model, output, signal, viewChild } from '@angular/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
@@ -29,6 +29,8 @@ export class SelectCategory implements FormValueControl<Category['id']> {
   value = model<Category['id']>('');
   disabled = model(false);
 
+  private inputElement = viewChild<ElementRef<HTMLInputElement>>('categoryInput');
+
   #budgetService = inject(BudgetService);
   categories = this.#budgetService.categories();
   searchPhrase = signal('');
@@ -42,5 +44,9 @@ export class SelectCategory implements FormValueControl<Category['id']> {
   displayFn = (categoryId: Category['id']) => {
     const category = this.categories.find(cat => cat.id === categoryId);
     return category ? category.name : '';
+  }
+
+  focus() {
+    this.inputElement()?.nativeElement.focus();
   }
 }

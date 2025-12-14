@@ -1,5 +1,29 @@
-<tr>
-  <td>{{ entry().category | categoryName }}</td>
-  <td>{{ entry().amount | internalCurrency }}</td>
-  <td>{{ entry().date | date : 'dd.MM.yyyy' }}</td>
-</tr>
+@if (mode() === 'view') {
+  <tr>
+    <td (click)="edit('category')">{{ entry().category | categoryName }}</td>
+    <td (click)="edit('amount')">{{ entry().amount | internalCurrency }}</td>
+    <td>{{ entry().date | date : 'dd.MM.yyyy' }}</td>
+    <td></td>
+  </tr>
+} @else {
+  <tr>
+    <td>
+      <app-select-category #categorySelect [field]="form.category" />
+    </td>
+    <td>
+      <mat-form-field>
+        <mat-label>Amount</mat-label>
+        <input #amountInput matInput type="number" placeholder="0.00" [field]="form.amount" step="0.01" />
+      </mat-form-field>
+    </td>
+    <td></td>
+    <td>
+      <button mat-icon-button color="primary" (click)="submit()" aria-label="Accept changes">
+        <mat-icon>check</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="abort()" aria-label="Reject changes">
+        <mat-icon>close</mat-icon>
+      </button>
+    </td>
+  </tr>
+}

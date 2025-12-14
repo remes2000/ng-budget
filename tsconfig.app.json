@@ -9,7 +9,8 @@
     "paths": {
       "@models": ["src/app/models"],
       "@data-access/*": ["src/app/data-access/*"],
-      "@pipes/*": ["src/app/pipes/*"]
+      "@pipes/*": ["src/app/pipes/*"],
+      "@controls/*": ["src/app/controls/*"]
     }
   },
   "include": [

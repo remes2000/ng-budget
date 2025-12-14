@@ -38,4 +38,12 @@ export class BudgetService {
     this.#entries.update(entries => [...entries, entry]);
     return entry;
   }
+
+  update(id: string, category: Category['id'], amount: number): void {
+    this.#entries.update(entries => entries.map(entry =>
+      entry.id === id
+        ? { ...entry, category, amount: amount * 100 }
+        : entry
+    ));
+  }
 }
