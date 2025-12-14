@@ -3,7 +3,7 @@ import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/materi
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { AddEntryForm } from './components/add-entry-form/add-entry-form';
-import { BudgetService } from '../../data-access/budget.service';
+import { BudgetService } from '@data-access/budget.service';
 
 @Component({
   selector: 'app-home',

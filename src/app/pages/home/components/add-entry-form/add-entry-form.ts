@@ -1,17 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { MatOption } from '@angular/material/core';
 import { MatButton } from '@angular/material/button';
-import { Field, form } from '@angular/forms/signals';
-import { Category } from '../../../../models';
+import { Field, form, min, required } from '@angular/forms/signals';
 import { JsonPipe } from '@angular/common';
-import { BudgetService } from '../../../../data-access/budget.service';
+import { BudgetService } from '@data-access/budget.service';
+import { SelectCategory } from './controls/select-category/select-category';
 
 @Component({
   selector: 'app-add-entry-form',
-  imports: [Field, MatFormField, MatLabel, MatInput, MatAutocomplete, MatAutocompleteTrigger, MatOption, MatButton, JsonPipe],
+  imports: [Field, MatFormField, MatLabel, MatInput, MatButton, JsonPipe, SelectCategory],
   templateUrl: './add-entry-form.html',
   styleUrl: './add-entry-form.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,16 +20,12 @@ export class AddEntryForm {
 
   protected model = signal({
     amount: 0,
-    category: '' as Category['id']
+    category: ''
   });
-  protected form = form(this.model);
-
-  #categories = ['Food', 'Transport', 'Entertainment', 'Utilities', 'Other'];
-  #categorySearch = signal('');
-
-  filteredCategories = computed(() => {
-    const search = this.#categorySearch().toLowerCase();
-    return this.#categories.filter(cat => cat.toLowerCase().includes(search));
+  protected form = form(this.model, (schemaPath) => {
+    required(schemaPath.amount);
+    min(schemaPath.amount, 0.01);
+    required(schemaPath.category);
   });
 
   focusAmountInput() {
@@ -46,6 +40,8 @@ export class AddEntryForm {
       this.form().reset();
       this.model.set({ amount: 0, category: '' });
       this.focusAmountInput();
+    } else {
+      this.form().markAsTouched();
     }
   }
 }

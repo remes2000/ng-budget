@@ -1,0 +1,15 @@
+<mat-form-field>
+  <mat-label>Category</mat-label>
+  <input
+    matInput
+    [matAutocomplete]="auto"
+    [ngModel]="value()"
+    (ngModelChange)="value.set($event)"
+    (input)="searchPhrase.set($event.target.value)"
+    placeholder="Search categories">
+  <mat-autocomplete requireSelection #auto="matAutocomplete">
+    @for (category of filteredCategories(); track category.id) {
+      <mat-option [value]="category.id">{{ category.name }}</mat-option>
+    }
+  </mat-autocomplete>
+</mat-form-field>
