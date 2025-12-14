@@ -6,8 +6,9 @@
     [ngModel]="value()"
     (ngModelChange)="value.set($event)"
     (input)="searchPhrase.set($event.target.value)"
+    [disabled]="disabled()"
     placeholder="Search categories">
-  <mat-autocomplete requireSelection #auto="matAutocomplete">
+  <mat-autocomplete requireSelection #auto="matAutocomplete" [displayWith]="displayFn">
     @for (category of filteredCategories(); track category.id) {
       <mat-option [value]="category.id">{{ category.name }}</mat-option>
     }

@@ -8,6 +8,8 @@ import { Category } from '@models';
 import { BudgetService } from '@data-access/budget.service';
 import { FormsModule } from '@angular/forms';
 
+// TODO: this control is half baked, it does not support all features like disabled state, errors etc.
+// To be honest I don't know how to do it and I have to learn it later. 
 @Component({
   selector: 'app-select-category',
   imports: [
@@ -25,6 +27,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class SelectCategory implements FormValueControl<Category['id']> {
   value = model<Category['id']>('');
+  disabled = model(false);
 
   #budgetService = inject(BudgetService);
   categories = this.#budgetService.categories();
@@ -35,4 +38,9 @@ export class SelectCategory implements FormValueControl<Category['id']> {
       cat.name.toLowerCase().includes(phrase)
     );
   });
+
+  displayFn = (categoryId: Category['id']) => {
+    const category = this.categories.find(cat => cat.id === categoryId);
+    return category ? category.name : '';
+  }
 }
