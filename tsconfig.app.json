@@ -8,7 +8,8 @@
     "baseUrl": "./",
     "paths": {
       "@models": ["src/app/models"],
-      "@data-access/*": ["src/app/data-access/*"]
+      "@data-access/*": ["src/app/data-access/*"],
+      "@pipes/*": ["src/app/pipes/*"]
     }
   },
   "include": [

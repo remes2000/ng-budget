@@ -1,0 +1,8 @@
+:host {
+  display: contents;
+}
+
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+}

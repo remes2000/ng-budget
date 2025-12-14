@@ -1,0 +1,21 @@
+<table>
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Amount</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (entry of entries(); track entry.id) {
+      <app-single-entry [entry]="entry" />
+    }
+  </tbody>
+  <tfoot>
+    <tr>
+      <td>Total</td>
+      <td>{{ totalAmount() | internalCurrency }}</td>
+      <td></td>
+    </tr>
+  </tfoot>
+</table>

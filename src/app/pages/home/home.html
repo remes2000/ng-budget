@@ -14,13 +14,7 @@
       </nav>
     </header>
     <main>
-      @for (entry of entries(); track entry.id) {
-        <div>
-          <span>{{ entry.amount }}</span> -
-          <span>{{ entry.category }}</span> -
-          <span>{{ entry.date }}</span>
-        </div>
-      }
+      <app-entries-overview />
     </main>
   </mat-drawer-content>
 </mat-drawer-container>

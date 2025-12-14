@@ -3,11 +3,12 @@ import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/materi
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { AddEntryForm } from './components/add-entry-form/add-entry-form';
+import { EntriesOverview } from './components/entries-overview/entries-overview';
 import { BudgetService } from '@data-access/budget.service';
 
 @Component({
   selector: 'app-home',
-  imports: [AddEntryForm, MatDrawer, MatDrawerContainer, MatDrawerContent, MatIconButton, MatIcon],
+  imports: [AddEntryForm, EntriesOverview, MatDrawer, MatDrawerContainer, MatDrawerContent, MatIconButton, MatIcon],
   templateUrl: './home.html',
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush
