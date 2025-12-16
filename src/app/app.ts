@@ -1,12 +1,28 @@
-import { Component, signal } from '@angular/core';
+import { Component, effect, inject, viewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
+import { AddEntryForm } from './components/add-entry-form/add-entry-form';
+import { AppHeader } from './components/app-header/app-header';
+import { DrawerService } from './drawer.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, MatDrawer, MatDrawerContainer, MatDrawerContent, AddEntryForm, AppHeader],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('ng-budget');
+  private drawerService = inject(DrawerService);
+  protected drawerOpened = this.drawerService.drawerOpened;
+  private addEntryForm = viewChild(AddEntryForm);
+
+  constructor() {
+    effect(() => {
+      if (this.drawerOpened()) {
+        setTimeout(() => {
+          this.addEntryForm()?.focusAmountInput();
+        });
+      }
+    });
+  }
 }

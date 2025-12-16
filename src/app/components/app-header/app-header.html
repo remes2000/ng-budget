@@ -1,0 +1,25 @@
+<header>
+  <button mat-icon-button (click)="toggleDrawer()">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <div class="selects">
+    <mat-form-field>
+      <mat-label>Month</mat-label>
+      <mat-select [value]="selectedMonth()" (valueChange)="onMonthChange($event)">
+        @for (month of months; track month.value) {
+          <mat-option [value]="month.value">{{ month.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Year</mat-label>
+      <mat-select [value]="selectedYear()" (valueChange)="onYearChange($event)">
+        @for (year of years; track year) {
+          <mat-option [value]="year">{{ year }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+</header>

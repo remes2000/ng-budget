@@ -1,0 +1,13 @@
+header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.selects {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: auto;
+}

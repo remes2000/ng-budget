@@ -2,16 +2,3 @@
   display: block;
   height: 100%;
 }
-
-mat-drawer-container {
-  height: 100%;
-}
-
-mat-drawer {
-  width: 460px;
-  padding: 16px;
-}
-
-mat-drawer-content {
-  padding: 16px;
-}
