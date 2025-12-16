@@ -2,7 +2,7 @@
   <tr>
     <td (click)="edit('category')">{{ entry().category | categoryName }}</td>
     <td (click)="edit('amount')">{{ entry().amount | internalCurrency }}</td>
-    <td>{{ entry().date | date : 'dd.MM.yyyy' }}</td>
+    <td>{{ entry().createdAt | date : 'dd.MM.yyyy' }}</td>
     <td></td>
   </tr>
 } @else {

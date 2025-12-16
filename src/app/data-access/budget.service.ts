@@ -1,7 +1,12 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { BudgetEntry, Category } from '@models';
+import { BudgetEntry, BudgetReport, Category } from '@models';
 import { CATEGORIES } from '../mock-data/categories';
 import { ReactiveStorageService } from './reactive-storage.service';
+
+const generateEmptyReport = (): BudgetReport => ({
+  entries: [],
+  categoryBudgets: []
+});
 
 @Injectable({
   providedIn: 'root'
@@ -12,11 +17,12 @@ export class BudgetService {
   #year = signal(new Date().getFullYear());
   #storageKey = computed(() => `budget-${this.#month()}-${this.#year()}`);
 
-  #entries = computed<BudgetEntry[]>(() => {
+  #report = computed<BudgetReport>(() => {
     const storageSignal = this.#reactiveStorage.getItem(this.#storageKey());
     const data = storageSignal();
-    return data ? JSON.parse(data) : [];
+    return data ? JSON.parse(data) : generateEmptyReport();
   });
+  #entries = computed<BudgetEntry[]>(() => this.#report().entries);
 
   entries = computed(() => this.#entries().map(entry => ({
     ...entry,
@@ -40,27 +46,35 @@ export class BudgetService {
       id: crypto.randomUUID(),
       amount: amount * 100,
       category,
-      date: new Date()
+      createdAt: new Date().toISOString()
+    };
+
+    const updatedReport: BudgetReport = {
+      ...this.#report(),
+      entries: [...this.#entries(), entry]
     };
 
     this.#reactiveStorage.setItem(
       this.#storageKey(),
-      JSON.stringify([...this.#entries(), entry])
+      JSON.stringify(updatedReport)
     );
 
     return entry;
   }
 
   update(id: string, category: Category['id'], amount: number): void {
+    const updatedReport: BudgetReport = {
+      ...this.#report(),
+      entries: this.#entries().map(entry =>
+        entry.id === id
+          ? { ...entry, category, amount: amount * 100 }
+          : entry
+      )
+    };
+
     this.#reactiveStorage.setItem(
       this.#storageKey(),
-      JSON.stringify(
-        this.#entries().map(entry =>
-          entry.id === id
-            ? { ...entry, category, amount: amount * 100 }
-            : entry
-        )
-      )
+      JSON.stringify(updatedReport)
     );
   }
 }
