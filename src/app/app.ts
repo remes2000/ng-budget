@@ -3,11 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { AddEntryForm } from './components/add-entry-form/add-entry-form';
 import { AppHeader } from './components/app-header/app-header';
+import { AppNav } from './components/app-nav/app-nav';
 import { DrawerService } from './drawer.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatDrawer, MatDrawerContainer, MatDrawerContent, AddEntryForm, AppHeader],
+  imports: [RouterOutlet, MatDrawer, MatDrawerContainer, MatDrawerContent, AddEntryForm, AppHeader, AppNav],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

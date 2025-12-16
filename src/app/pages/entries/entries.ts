@@ -3,12 +3,12 @@ import { EntriesOverview } from './components/entries-overview/entries-overview'
 import { BudgetService } from '@data-access/budget.service';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-entries',
   imports: [EntriesOverview],
-  templateUrl: './home.html',
-  styleUrl: './home.css',
+  templateUrl: './entries.html',
+  styleUrl: './entries.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Home {
+export class Entries {
   protected entries = inject(BudgetService).entries;
 }

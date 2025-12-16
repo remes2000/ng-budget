@@ -1,0 +1,21 @@
+<nav mat-tab-nav-bar [tabPanel]="tabPanel">
+  <a
+    mat-tab-link
+    routerLink="/entries"
+    routerLinkActive
+    #rlaEntries="routerLinkActive"
+    [active]="rlaEntries.isActive"
+  >
+    Entries
+  </a>
+  <a
+    mat-tab-link
+    routerLink="/report"
+    routerLinkActive
+    #rlaReport="routerLinkActive"
+    [active]="rlaReport.isActive"
+  >
+    Report
+  </a>
+</nav>
+<mat-tab-nav-panel #tabPanel />
