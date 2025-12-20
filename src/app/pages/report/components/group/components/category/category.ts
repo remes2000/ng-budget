@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { BudgetService } from '@data-access/budget.service';
 import { Category } from '@models';
 import { InternalCurrencyPipe } from '@pipes/internal-currency.pipe';
+import { ColorAmount } from 'src/app/directives/color-amount';
 
 @Component({
   selector: 'app-category',
-  imports: [ InternalCurrencyPipe ],
+  imports: [ InternalCurrencyPipe, ColorAmount ],
   templateUrl: './category.html',
   styleUrl: './category.css',
   changeDetection: ChangeDetectionStrategy.OnPush

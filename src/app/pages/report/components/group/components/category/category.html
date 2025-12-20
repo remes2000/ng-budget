@@ -1,6 +1,7 @@
 <tr>
   <td>{{ category().name }}</td>
+  <!-- TODO: I should create generic editable component for that -->
   <td>{{ budgetedAmount() | internalCurrency}}</td>
   <td>{{ actualAmount() | internalCurrency }}</td>
-  <td>{{ difference() | internalCurrency }}</td>
+  <td [colorAmount]="difference()">{{ difference() | internalCurrency }}</td>
 </tr>
