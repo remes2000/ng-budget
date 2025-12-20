@@ -9,7 +9,8 @@
       matInput
       type="number"
       step="0.01"
-      [(ngModel)]="editValue"
+      [value]="editValue()"
+      (input)="onInputChange($event.target.value)"
       (keydown.escape)="exit()"
       (keydown.enter)="saveAndExit()"
     >

@@ -6,7 +6,7 @@ import { InternalCurrencyPipe } from '@pipes/internal-currency.pipe';
 
 @Component({
   selector: 'app-budget-value',
-  imports: [FormsModule, MatFormField, MatInput, InternalCurrencyPipe],
+  imports: [MatFormField, MatInput, InternalCurrencyPipe],
   templateUrl: './budget-value.html',
   styleUrl: './budget-value.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,6 +26,7 @@ export class BudgetValue {
         const input = this.inputElement();
         if (input) {
           input.nativeElement.focus();
+          input.nativeElement.select();
         }
       }
     });
@@ -44,5 +45,9 @@ export class BudgetValue {
 
   exit(): void {
     this.mode.set('view');
+  }
+
+  onInputChange(value: string): void {
+    this.editValue.set(Number(value));
   }
 }
