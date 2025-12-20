@@ -9,9 +9,18 @@ export interface Category {
   id: string;
   name: string;
   type: 'income' | 'expense';
+  groupId: Group['id']
+}
+
+export interface Group {
+  id: string;
+  name: string;
 }
 
 export interface BudgetReport {
   entries: BudgetEntry[];
-  categoryBudgets: Array<{ [categoryId: Category['id']]: number }>;
+  categoryBudgets: {
+    categoryId: Category['id'];
+    amount: number;
+  }[]
 }

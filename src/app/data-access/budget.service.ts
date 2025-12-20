@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { BudgetEntry, BudgetReport, Category } from '@models';
-import { CATEGORIES } from '../mock-data/categories';
+import { BudgetEntry, BudgetReport, Category, Group } from '@models';
+import { CATEGORIES, GROUPS } from '../mock-data/categories';
 import { ReactiveStorageService } from './reactive-storage.service';
 
 const generateEmptyReport = (): BudgetReport => ({
@@ -23,13 +23,17 @@ export class BudgetService {
     return data ? JSON.parse(data) : generateEmptyReport();
   });
   #entries = computed<BudgetEntry[]>(() => this.#report().entries);
+  #groups = signal<Group[]>(GROUPS);
 
   entries = computed(() => this.#entries().map(entry => ({
     ...entry,
     amount: entry.amount / 100
   })));
-
+  budgets = computed(() => {
+    return this.#report().categoryBudgets;
+  });
   categories = signal<Category[]>(CATEGORIES).asReadonly();
+  groups = this.#groups.asReadonly();
   month = this.#month.asReadonly();
   year = this.#year.asReadonly();
 

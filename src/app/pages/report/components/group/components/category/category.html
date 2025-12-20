@@ -1,0 +1,6 @@
+<tr>
+  <td>{{ category().name }}</td>
+  <td>{{ budgetedAmount() | internalCurrency}}</td>
+  <td>{{ actualAmount() | internalCurrency }}</td>
+  <td>{{ difference() | internalCurrency }}</td>
+</tr>

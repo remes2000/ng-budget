@@ -1,1 +1,5 @@
-<p>report works!</p>
+<section>
+  @for (group of groups(); track group.id) {
+    <app-group [group]="group" />
+  }
+</section>

@@ -1,0 +1,30 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>{{ group().name }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Budgeted</th>
+          <th>Actual</th>
+          <th>Difference</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (category of categories(); track category.id) {
+          <app-category [category]="category" />
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>Total</td>
+          <td>{{ budgetedTotal() | internalCurrency}}</td>
+          <td>{{ actualTotal() | internalCurrency }}</td>
+          <td>{{ difference() | internalCurrency }}</td>
+        </tr>
+      </tfoot>
+    </table>    
+  </mat-card-content>
+</mat-card>
