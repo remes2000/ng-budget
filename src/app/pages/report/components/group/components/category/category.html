@@ -1,7 +1,9 @@
 <tr>
   <td>{{ category().name }}</td>
   <!-- TODO: I should create generic editable component for that -->
-  <td>{{ budgetedAmount() | internalCurrency}}</td>
+  <td>
+    <app-budget-value [amount]="budgetedAmount()" (amountChange)="updateBudget($event)" />
+  </td>
   <td>{{ actualAmount() | internalCurrency }}</td>
   <td [colorAmount]="difference()">{{ difference() | internalCurrency }}</td>
 </tr>

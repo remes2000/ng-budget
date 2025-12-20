@@ -3,10 +3,11 @@ import { BudgetService } from '@data-access/budget.service';
 import { Category } from '@models';
 import { InternalCurrencyPipe } from '@pipes/internal-currency.pipe';
 import { ColorAmount } from 'src/app/directives/color-amount';
+import { BudgetValue } from './budget-value/budget-value';
 
 @Component({
   selector: 'app-category',
-  imports: [ InternalCurrencyPipe, ColorAmount ],
+  imports: [ BudgetValue, InternalCurrencyPipe, ColorAmount ],
   templateUrl: './category.html',
   styleUrl: './category.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -27,4 +28,8 @@ export class CategoryComponent {
       .reduce((sum, entry) => sum + entry.amount, 0);
   });
   difference = computed(() => this.budgetedAmount() - this.actualAmount());
+
+  updateBudget(newAmount: number): void {
+    this.#budgetService.updateBudgetForCategory(this.category().id, newAmount);
+  }
 }

@@ -1,0 +1,17 @@
+@if (mode() === 'view') {
+  <div (click)="enterEditMode()">
+    {{ amount() | internalCurrency }}
+  </div>
+} @else {
+  <mat-form-field appearance="outline" class="budget-value-input">
+    <input
+      #budgetInput
+      matInput
+      type="number"
+      step="0.01"
+      [(ngModel)]="editValue"
+      (keydown.escape)="exit()"
+      (keydown.enter)="saveAndExit()"
+    >
+  </mat-form-field>
+}

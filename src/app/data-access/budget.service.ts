@@ -81,4 +81,29 @@ export class BudgetService {
       JSON.stringify(updatedReport)
     );
   }
+
+  updateBudgetForCategory(categoryId: string, amount: number): void {
+    const currentBudgets = this.#report().categoryBudgets;
+    const existingBudgetIndex = currentBudgets.findIndex(
+      budget => budget.categoryId === categoryId
+    );
+
+    const updatedBudgets = existingBudgetIndex >= 0
+      ? currentBudgets.map(budget =>
+          budget.categoryId === categoryId
+            ? { ...budget, amount: amount * 100 }
+            : budget
+        )
+      : [...currentBudgets, { categoryId, amount: amount * 100 }];
+
+    const updatedReport: BudgetReport = {
+      ...this.#report(),
+      categoryBudgets: updatedBudgets
+    };
+
+    this.#reactiveStorage.setItem(
+      this.#storageKey(),
+      JSON.stringify(updatedReport)
+    );
+  }
 }
