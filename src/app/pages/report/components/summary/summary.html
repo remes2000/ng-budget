@@ -1,0 +1,31 @@
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Budget Summary</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <table>
+      <tbody>
+        <tr>
+          <td class="label">Budgeted:</td>
+          <td class="value">{{ budgeted() | internalCurrency }}</td>
+        </tr>
+        <tr>
+          <td class="label">Actual Spending:</td>
+          <td class="value">{{ actual() | internalCurrency }}</td>
+        </tr>
+        <tr>
+          <td class="label">Difference:</td>
+          <td class="value" [colorAmount]="difference()">{{ difference() | internalCurrency }}</td>
+        </tr>
+        <tr>
+          <td class="label">Budget Used:</td>
+          <td class="value">{{ percentageUsed() | number: '1.1-1' }}%</td>
+        </tr>
+        <tr>
+          <td class="label">Remaining to Spend:</td>
+          <td class="value" [colorAmount]="remaining()">{{ remaining() | internalCurrency }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </mat-card-content>
+</mat-card>

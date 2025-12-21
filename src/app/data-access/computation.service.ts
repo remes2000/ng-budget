@@ -33,4 +33,32 @@ export class ComputationService {
       .map(cat => this.categoryBudget(cat.id))
       .reduce((sum, amount) => sum + amount, 0);
   }
+
+  totalBudgeted(): number {
+    const expenseCategories = this.#budgetService.categories().filter(cat => cat.type === 'expense');
+    return expenseCategories
+      .map(cat => this.categoryBudget(cat.id))
+      .reduce((sum, amount) => sum + amount, 0);
+  }
+
+  totalSpent(): number {
+    const expenseCategories = this.#budgetService.categories().filter(cat => cat.type === 'expense');
+    return expenseCategories
+      .map(cat => this.categorySpending(cat.id))
+      .reduce((sum, amount) => sum + amount, 0);
+  }
+
+  totalDifference(): number {
+    return this.totalBudgeted() - this.totalSpent();
+  }
+
+  percentageUsed(): number {
+    const budgeted = this.totalBudgeted();
+    if (budgeted === 0) return 0;
+    return (this.totalSpent() / budgeted) * 100;
+  }
+
+  remainingToSpend(): number {
+    return this.totalDifference();
+  }
 }
