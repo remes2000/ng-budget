@@ -1,5 +1,7 @@
 <form (submit)="submit($event)">
   <div class="add-entry-form">
+    <h2>Add Entry</h2>
+
     <mat-form-field>
       <mat-label>Amount</mat-label>
       <input #amountInput matInput type="number" placeholder="0.00" [field]="form.amount" step="0.01">
