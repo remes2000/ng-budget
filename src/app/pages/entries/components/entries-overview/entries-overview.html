@@ -1,25 +1,36 @@
-<table>
-  <thead>
-    <tr>
-      <th>Category</th>
-      <th>Amount</th>
-      <th>Date</th>
-      <th>Comment</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (entry of entries(); track entry.id) {
-      <app-single-entry [entry]="entry" />
-    }
-  </tbody>
-  <tfoot>
-    <tr>
-      <td>Total</td>
-      <td>{{ totalAmount() | internalCurrency }}</td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-  </tfoot>
-</table>
+<section>
+  <mat-form-field>
+    <mat-label>Search</mat-label>
+    <input
+      matInput
+      type="search"
+      [(ngModel)]="searchTerm"
+    />
+  </mat-form-field>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Comment</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (entry of entries(); track entry.id) {
+        <app-single-entry [entry]="entry" />
+      }
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>Total</td>
+        <td>{{ totalAmount() | internalCurrency }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+</section>
