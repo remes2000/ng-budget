@@ -49,4 +49,27 @@ export class AppHeader {
   protected onYearChange(year: number): void {
     this.budgetService.setYear(year);
   }
+
+  protected onDumpData(): void {
+    const report = this.budgetService.report();
+    const month = this.selectedMonth();
+    const year = this.selectedYear();
+    const timestamp = Date.now();
+    const filename = `budget_dump_${month}_${year}_${timestamp}.json`;
+
+    this.downloadAsJson(report, filename);
+  }
+
+  private downloadAsJson(data: unknown, filename: string): void {
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+
+    URL.revokeObjectURL(url);
+  }
 }

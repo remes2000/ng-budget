@@ -17,16 +17,16 @@ export class BudgetService {
   #year = signal(new Date().getFullYear());
   #storageKey = computed(() => `budget-${this.#month()}-${this.#year()}`);
 
-  #report = computed<BudgetReport>(() => {
+  #groups = signal<Group[]>(GROUPS);
+  report = computed<BudgetReport>(() => {
     const storageSignal = this.#reactiveStorage.getItem(this.#storageKey());
     const data = storageSignal();
     return data ? JSON.parse(data) : generateEmptyReport();
   });
-  #groups = signal<Group[]>(GROUPS);
-  entries = computed<BudgetEntry[]>(() => this.#report().entries);
+  entries = computed<BudgetEntry[]>(() => this.report().entries);
 
   budgets = computed(() => {
-    return this.#report().categoryBudgets;
+    return this.report().categoryBudgets;
   });
   categories = signal<Category[]>(CATEGORIES).asReadonly();
   groups = this.#groups.asReadonly();
@@ -50,7 +50,7 @@ export class BudgetService {
     };
 
     const updatedReport: BudgetReport = {
-      ...this.#report(),
+      ...this.report(),
       entries: [...this.entries(), entry]
     };
 
@@ -64,7 +64,7 @@ export class BudgetService {
 
   update(id: string, category: Category['id'], amount: number): void {
     const updatedReport: BudgetReport = {
-      ...this.#report(),
+      ...this.report(),
       entries: this.entries().map(entry =>
         entry.id === id
           ? { ...entry, category, amount: amount * 100 }
@@ -79,7 +79,7 @@ export class BudgetService {
   }
 
   updateBudgetForCategory(categoryId: string, amount: number): void {
-    const currentBudgets = this.#report().categoryBudgets;
+    const currentBudgets = this.report().categoryBudgets;
     const existingBudgetIndex = currentBudgets.findIndex(
       budget => budget.categoryId === categoryId
     );
@@ -93,7 +93,7 @@ export class BudgetService {
       : [...currentBudgets, { categoryId, amount: amount * 100 }];
 
     const updatedReport: BudgetReport = {
-      ...this.#report(),
+      ...this.report(),
       categoryBudgets: updatedBudgets
     };
 
