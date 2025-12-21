@@ -3,6 +3,7 @@ export interface BudgetEntry {
   amount: number;
   category: string;
   createdAt: string;
+  comment?: string;
 }
 
 export interface Category {

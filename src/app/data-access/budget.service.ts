@@ -62,12 +62,12 @@ export class BudgetService {
     return entry;
   }
 
-  update(id: string, category: Category['id'], amount: number): void {
+  update(id: string, category: Category['id'], amount: number, comment: string): void {
     const updatedReport: BudgetReport = {
       ...this.report(),
       entries: this.entries().map(entry =>
         entry.id === id
-          ? { ...entry, category, amount: amount * 100 }
+          ? { ...entry, category, amount: amount * 100, comment }
           : entry
       )
     };
