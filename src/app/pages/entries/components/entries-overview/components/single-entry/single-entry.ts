@@ -59,4 +59,11 @@ export class SingleEntry {
     this.form().reset();
     this.mode.set('view');
   }
+
+  delete() {
+    const confirmed = confirm('Are you sure you want to delete this entry?');
+    if (confirmed) {
+      this.budgetService.delete(this.entry().id);
+    }
+  }
 }

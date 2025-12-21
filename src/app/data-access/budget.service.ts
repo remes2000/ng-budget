@@ -102,4 +102,16 @@ export class BudgetService {
       JSON.stringify(updatedReport)
     );
   }
+
+  delete(id: string): void {
+    const updatedReport: BudgetReport = {
+      ...this.report(),
+      entries: this.entries().filter(entry => entry.id !== id)
+    };
+
+    this.#reactiveStorage.setItem(
+      this.#storageKey(),
+      JSON.stringify(updatedReport)
+    );
+  }
 }

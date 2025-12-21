@@ -3,7 +3,11 @@
     <td (click)="edit('category')">{{ entry().category | categoryName }}</td>
     <td (click)="edit('amount')">{{ entry().amount | internalCurrency }}</td>
     <td>{{ entry().createdAt | date : 'dd.MM.yyyy' }}</td>
-    <td></td>
+    <td>
+      <button mat-icon-button color="warn" (click)="delete()" aria-label="Delete entry">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
   </tr>
 } @else {
   <tr>
