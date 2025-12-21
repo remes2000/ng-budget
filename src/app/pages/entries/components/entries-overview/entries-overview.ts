@@ -11,7 +11,13 @@ import { InternalCurrencyPipe } from '@pipes/internal-currency.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntriesOverview {
-  protected entries = inject(BudgetService).entries;
+  #budgetService = inject(BudgetService);
+  protected entries = computed(() => {
+    return this.#budgetService.entries().sort((a, b) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }) 
+
   protected totalAmount = computed(() =>
     this.entries().reduce((sum, entry) => sum + entry.amount, 0)
   );
