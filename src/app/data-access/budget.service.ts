@@ -5,7 +5,10 @@ import { ReactiveStorageService } from './reactive-storage.service';
 
 const generateEmptyReport = (): BudgetReport => ({
   entries: [],
-  categoryBudgets: []
+  categoryBudgets: CATEGORIES.map((category) => ({
+    categoryId: category.id,
+    amount: category.defaultBudget
+  }))
 });
 
 @Injectable({

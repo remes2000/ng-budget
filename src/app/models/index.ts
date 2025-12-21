@@ -10,7 +10,8 @@ export interface Category {
   id: string;
   name: string;
   type: 'income' | 'expense';
-  groupId: Group['id']
+  groupId: Group['id'];
+  defaultBudget: number;
 }
 
 export interface Group {
