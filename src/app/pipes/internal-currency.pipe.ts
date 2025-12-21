@@ -6,6 +6,6 @@ import { formatCurrency } from '@angular/common';
 })
 export class InternalCurrencyPipe implements PipeTransform {
   transform(value: number): string {
-    return formatCurrency(value, 'pl-PL', '');
+    return formatCurrency(value / 100, 'pl-PL', '');
   }
 }

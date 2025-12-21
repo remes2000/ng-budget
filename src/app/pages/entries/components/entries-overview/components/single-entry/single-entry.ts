@@ -34,10 +34,11 @@ export class SingleEntry {
 
   edit(field: 'amount' | 'category') {
     this.mode.set('edit');
-    this.model.set({ category: this.entry().category, amount: this.entry().amount });
+    this.model.set({ category: this.entry().category, amount: this.entry().amount / 100 });
     setTimeout(() => {
       if (field === 'amount') {
         this.amountInput()?.nativeElement.focus();
+        this.amountInput()?.nativeElement.select();
       } else {
         this.categorySelect()?.focus();
       }

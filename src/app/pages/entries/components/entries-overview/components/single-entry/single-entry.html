@@ -13,7 +13,7 @@
     <td>
       <mat-form-field>
         <mat-label>Amount</mat-label>
-        <input #amountInput matInput type="number" placeholder="0.00" [field]="form.amount" step="0.01" />
+        <input #amountInput matInput type="number" placeholder="0.00" [field]="form.amount" step="0.01" (keydown.enter)="submit()" />
       </mat-form-field>
     </td>
     <td></td>

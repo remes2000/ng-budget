@@ -22,13 +22,9 @@ export class BudgetService {
     const data = storageSignal();
     return data ? JSON.parse(data) : generateEmptyReport();
   });
-  #entries = computed<BudgetEntry[]>(() => this.#report().entries);
   #groups = signal<Group[]>(GROUPS);
+  entries = computed<BudgetEntry[]>(() => this.#report().entries);
 
-  entries = computed(() => this.#entries().map(entry => ({
-    ...entry,
-    amount: entry.amount / 100
-  })));
   budgets = computed(() => {
     return this.#report().categoryBudgets;
   });
@@ -48,14 +44,14 @@ export class BudgetService {
   add(amount: number, category: string): BudgetEntry {
     const entry: BudgetEntry = {
       id: crypto.randomUUID(),
-      amount: amount * 100,
+      amount: Math.round(amount * 100),
       category,
       createdAt: new Date().toISOString()
     };
 
     const updatedReport: BudgetReport = {
       ...this.#report(),
-      entries: [...this.#entries(), entry]
+      entries: [...this.entries(), entry]
     };
 
     this.#reactiveStorage.setItem(
@@ -69,7 +65,7 @@ export class BudgetService {
   update(id: string, category: Category['id'], amount: number): void {
     const updatedReport: BudgetReport = {
       ...this.#report(),
-      entries: this.#entries().map(entry =>
+      entries: this.entries().map(entry =>
         entry.id === id
           ? { ...entry, category, amount: amount * 100 }
           : entry

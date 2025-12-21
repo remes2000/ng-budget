@@ -33,7 +33,7 @@ export class BudgetValue {
   }
 
   enterEditMode(): void {
-    this.editValue.set(this.amount());
+    this.editValue.set(this.amount() / 100);
     this.mode.set('edit');
   }
 
