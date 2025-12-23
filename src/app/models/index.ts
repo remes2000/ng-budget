@@ -1,9 +1,20 @@
+import type PocketBase from 'pocketbase';
+import { type RecordService } from 'pocketbase';
+
+export interface TypedPocketBase extends PocketBase {
+  collection(idOrName: string): RecordService // default fallback for any other collection
+  collection(idOrName: 'entries'): RecordService<BudgetEntry>
+}
+
 export interface BudgetEntry {
   id: string;
+  year: number;
+  month: number;
   amount: number;
   category: string;
-  createdAt: string;
   comment?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Category {

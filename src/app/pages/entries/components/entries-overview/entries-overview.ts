@@ -17,10 +17,15 @@ export class EntriesOverview {
   protected searchTerm = signal('');
 
   protected entries = computed(() => {
+    const resource = this.#budgetService.entryResource;
+    if (!resource.hasValue()) {
+      return [];
+    }
+
     const term = this.searchTerm().toLowerCase().trim();
     const categories = this.#budgetService.categories();
 
-    return this.#budgetService.entries()
+    return resource.value()
       .filter(entry => {
         if (!term) return true;
 
