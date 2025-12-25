@@ -51,7 +51,8 @@ export class AppHeader {
   }
 
   protected onDumpData(): void {
-    const report = this.budgetService.report();
+    // const report = this.budgetService.report();
+    const report = {};
     const month = this.selectedMonth();
     const year = this.selectedYear();
     const timestamp = Date.now();

@@ -15,20 +15,20 @@ import { PrintError } from 'src/app/components/app-print-error/app-print-error';
 })
 export class EntriesOverview {
   #budgetService = inject(BudgetService);
-  #entryResource = this.#budgetService.entryResource;
-  error = this.#entryResource.error;
+  reportResource = this.#budgetService.reportResource;
+  error = this.reportResource.error;
 
   protected searchTerm = signal('');
 
   protected entries = computed(() => {
-    if (!this.#entryResource.hasValue()) {
+    if (!this.reportResource.hasValue()) {
       return [];
     }
 
     const term = this.searchTerm().toLowerCase().trim();
     const categories = this.#budgetService.categories();
 
-    return this.#entryResource.value()
+    return this.reportResource.value().entries
       .filter(entry => {
         if (!term) return true;
 

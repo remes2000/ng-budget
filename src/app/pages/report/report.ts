@@ -13,6 +13,6 @@ import { PrintError } from 'src/app/components/app-print-error/app-print-error';
 })
 export class Report {
   #budgetService = inject(BudgetService);
-  error = this.#budgetService.entryResource.error;
+  error = this.#budgetService.reportResource.error;
   groups = inject(BudgetService).groups;
 }

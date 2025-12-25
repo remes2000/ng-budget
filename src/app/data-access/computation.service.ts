@@ -17,7 +17,7 @@ export class ComputationService {
 
   categoryBudget(categoryId: Category['id']): number {
     const budgets = this.#budgetService.budgets();
-    return budgets.find((budget) => budget.categoryId === categoryId)?.amount ?? 0;
+    return budgets.find((budget) => budget.category === categoryId)?.amount ?? 0;
   }
 
   groupSpending(groupId: Group['id']): number {

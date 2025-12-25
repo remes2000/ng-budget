@@ -11,10 +11,7 @@ type AddEntry = Pick<BudgetEntry, 'amount' | 'category' | 'comment'>
 type UpdateEntry = Partial<Pick<BudgetEntry, 'amount' | 'category' | 'comment'>>;
 type RequestOptions = { signal?: AbortSignal }
 const fetchWithSignal = (signal: AbortSignal) =>
-  (input: RequestInfo | URL, init?: RequestInit) => {
-    console.log('Fetch with my fetch', input);
-    return fetch(input, { ...init, signal })
-  };
+  (input: RequestInfo | URL, init?: RequestInit) => fetch(input, { ...init, signal })
 
 @Injectable({
   providedIn: 'root'

@@ -1,33 +1,57 @@
 import { computed, inject, Injectable, resource, ResourceStreamItem, signal } from '@angular/core';
-import { BudgetEntry, BudgetReport, Category, Group } from '@models';
+import { BudgetEntry, BudgetReport, Category, CategoryBudget, Group } from '@models';
 import { CATEGORIES, GROUPS } from '../mock-data/categories';
-import { ReactiveStorageService } from './reactive-storage.service';
 import { EntryService } from './entry.service';
-
-const generateEmptyReport = (): BudgetReport => ({
-  entries: [],
-  categoryBudgets: CATEGORIES.map((category) => ({
-    categoryId: category.id,
-    amount: category.defaultBudget
-  }))
-});
+import { CategoryBudgetService } from './category-budget.service';
 
 const entryResourceReducer = (
-  state: BudgetEntry[],
+  state: BudgetReport,
   action: string,
   payload: BudgetEntry
 ) => {
   if ( action === 'create' ) {
-    return [ ...state, payload ];
+    return { ...state, entries: [ ...state.entries, payload ] };
   } else if ( action === 'update' ) {
-    return state.map((entry) => {
-      if (entry.id === payload.id) {
-        return payload;
-      }
-      return entry;
-    });
+    return {
+      ...state,
+      entries: state.entries.map((entry) => {
+        if (entry.id === payload.id) {
+          return payload;
+        }
+        return entry;
+      })
+    }
   } else if ( action === 'delete' ) {
-    return state.filter((entry) => entry.id !== payload.id);
+    return {
+      ...state,
+      entries: state.entries.filter((entry) => entry.id !== payload.id)
+    }
+  }
+  return state;
+};
+
+const categoryBudgetReducer = (
+  state: BudgetReport,
+  action: string,
+  payload: CategoryBudget
+) => {
+  if ( action === 'create' ) {
+    return { ...state, categoryBudgets: [ ...state.entries, payload ] };
+  } else if ( action === 'update' ) {
+    return {
+      ...state,
+      categoryBudgets: state.categoryBudgets.map((budget) => {
+        if (budget.id === payload.id) {
+          return payload;
+        }
+        return budget;
+      })
+    }
+  } else if ( action === 'delete' ) {
+    return {
+      ...state,
+      categoryBudgets: state.categoryBudgets.filter((budget) => budget.id !== payload.id)
+    }
   }
   return state;
 };
@@ -36,21 +60,21 @@ const entryResourceReducer = (
   providedIn: 'root'
 })
 export class BudgetService {
-  #reactiveStorage = inject(ReactiveStorageService);
   #entryService = inject(EntryService);
-  #month = signal(new Date().getMonth() + 1);
+  #categoryBudgetService = inject(CategoryBudgetService);
   #year = signal(new Date().getFullYear());
-  #storageKey = computed(() => `budget-${this.#month()}-${this.#year()}`);
+  #month = signal(new Date().getMonth() + 1);
 
-  entryResource = resource({
+  reportResource = resource({
     params: () => ({ year: this.#year(), month: this.#month() }),
     stream: async ({ params, abortSignal }) => {
       const { year, month } = params;
-      const result = signal<ResourceStreamItem<BudgetEntry[]>>({ value: [] });
+      const result = signal<ResourceStreamItem<BudgetReport>>({ value: { entries: [], categoryBudgets: [] } });
 
       try {
-        const allEntries = await this.#entryService.getAll({ year, month }, { signal: abortSignal });
-        result.set({ value: allEntries });
+        const entries = await this.#entryService.getAll({ year, month }, { signal: abortSignal });
+        const categoryBudgets = await this.#categoryBudgetService.getAll({ year, month }, { signal: abortSignal });
+        result.set({ value: { entries, categoryBudgets } });
       } catch (error) {
         result.set({ error: error instanceof Error ? error : new Error(String(error)) });
         return result;
@@ -63,19 +87,38 @@ export class BudgetService {
         });
       };
 
-      let unsubscribeEntryFn = null;
+      const budgetCallback = ({ action, record }: { action: string, record: CategoryBudget }) => {
+        result.update((resourceValue) => {
+          if ('error' in resourceValue) return resourceValue;
+          return { value: categoryBudgetReducer(resourceValue.value, action, record) };
+        });
+      };
+
+      let unsubscribeEntryFn: null | (() => void) = null;
+      let unsubscribeCategoryBudgetFn: null | (() => void) = null;
+      const unsubscribe = () => {
+        if (unsubscribeEntryFn !== null)  {
+          unsubscribeEntryFn();
+        }
+        if (unsubscribeCategoryBudgetFn !== null) {
+          unsubscribeCategoryBudgetFn();
+        }
+      };
+
       try {
         unsubscribeEntryFn = await this.#entryService.subscribe({ year, month }, entryCallback);
+        unsubscribeCategoryBudgetFn = await this.#categoryBudgetService.subscribe({ year, month }, budgetCallback);
       } catch (error) {
+        unsubscribe();
         result.set({ error: error instanceof Error ? error : new Error(String(error)) }); 
         return result;
       }
 
       if (abortSignal.aborted) {
-        unsubscribeEntryFn();
+        unsubscribe();
       } else {
         abortSignal.addEventListener('abort', () => {
-          unsubscribeEntryFn();
+          unsubscribe();
         }, { once: true });
       }
 
@@ -83,19 +126,22 @@ export class BudgetService {
     }
   });
 
-  #groups = signal<Group[]>(GROUPS);
-  report = computed<BudgetReport>(() => {
-    const storageSignal = this.#reactiveStorage.getItem(this.#storageKey());
-    const data = storageSignal();
-    return data ? JSON.parse(data) : generateEmptyReport();
+  entries = computed<BudgetEntry[]>(() => {
+    if (!this.reportResource.hasValue()) {
+      return [];
+    }
+    return this.reportResource.value().entries;
   });
-  entries = computed<BudgetEntry[]>(() => this.report().entries);
 
   budgets = computed(() => {
-    return this.report().categoryBudgets;
+    if (!this.reportResource.hasValue()) {
+      return [];
+    }
+    return this.reportResource.value().categoryBudgets;
   });
+
+  groups = signal<Group[]>(GROUPS).asReadonly();
   categories = signal<Category[]>(CATEGORIES).asReadonly();
-  groups = this.#groups.asReadonly();
   month = this.#month.asReadonly();
   year = this.#year.asReadonly();
 
@@ -126,27 +172,14 @@ export class BudgetService {
   }
 
   updateBudgetForCategory(categoryId: string, amount: number): void {
-    const currentBudgets = this.report().categoryBudgets;
-    const existingBudgetIndex = currentBudgets.findIndex(
-      budget => budget.categoryId === categoryId
-    );
-
-    const updatedBudgets = existingBudgetIndex >= 0
-      ? currentBudgets.map(budget =>
-          budget.categoryId === categoryId
-            ? { ...budget, amount: amount * 100 }
-            : budget
-        )
-      : [...currentBudgets, { categoryId, amount: amount * 100 }];
-
-    const updatedReport: BudgetReport = {
-      ...this.report(),
-      categoryBudgets: updatedBudgets
-    };
-
-    this.#reactiveStorage.setItem(
-      this.#storageKey(),
-      JSON.stringify(updatedReport)
-    );
+    const budget = this.budgets().find(({ category }) => category === categoryId);
+    if (budget) {
+      this.#categoryBudgetService.update(budget.id, { amount: amount * 100 });
+    } else {
+      this.#categoryBudgetService.add(
+        { month: this.#month(), year: this.#year() },
+        { category: categoryId, amount: amount * 100 }
+      );
+    }
   }
 }
