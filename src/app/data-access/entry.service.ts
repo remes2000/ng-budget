@@ -20,13 +20,6 @@ export class EntryService {
   #pb = inject(PB);
 
   getAll({ month, year }: BudgetMonth, { signal }: RequestOptions ) {
-    if (year === 2025 && month === 3) {
-      return this.#pb.collection('entries').getFullList({
-        filter: `year = ${year} && monthskibidi = ${month}`,
-        fetch: fetchWithSignal(signal ?? new AbortSignal())
-      });
-    }
-
     return this.#pb.collection('entries').getFullList({
       filter: `year = ${year} && month = ${month}`,
       fetch: fetchWithSignal(signal ?? new AbortSignal())
