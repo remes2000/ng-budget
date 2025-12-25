@@ -36,7 +36,7 @@ const categoryBudgetReducer = (
   payload: CategoryBudget
 ) => {
   if ( action === 'create' ) {
-    return { ...state, categoryBudgets: [ ...state.entries, payload ] };
+    return { ...state, categoryBudgets: [ ...state.categoryBudgets, payload ] };
   } else if ( action === 'update' ) {
     return {
       ...state,
