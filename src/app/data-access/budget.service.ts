@@ -42,46 +42,42 @@ export class BudgetService {
   #year = signal(new Date().getFullYear());
   #storageKey = computed(() => `budget-${this.#month()}-${this.#year()}`);
 
-  // I wonder how I'm going to implement optimistic ui with this resource  
   entryResource = resource({
     params: () => ({ year: this.#year(), month: this.#month() }),
     stream: async ({ params, abortSignal }) => {
       const { year, month } = params;
-      
-      // 1. Create signal representing the Stream
       const result = signal<ResourceStreamItem<BudgetEntry[]>>({ value: [] });
 
-      // 2. Fetch all entries
       try {
-        // TODO: pass abort signal
-        const allEntries = await this.#entryService.getAll({ year, month });
+        const allEntries = await this.#entryService.getAll({ year, month }, { signal: abortSignal });
         result.set({ value: allEntries });
       } catch (error) {
-        // TODO: update result
+        result.set({ error: error instanceof Error ? error : new Error(String(error)) });
+        return result;
       }
 
-      let unsubscribe = null;
-      try {
-        unsubscribe = await this.#entryService.subscribe({ year, month }, ({ action, record }) => {
-          result.update((resourceValue) => {
-            if ('error' in resourceValue) {
-              // I guess don't change value?
-              return resourceValue;
-            }
-            return { value: entryResourceReducer(resourceValue.value, action, record) };
-          });
+      const entryCallback = ({ action, record }: { action: string, record: BudgetEntry }) => {
+        result.update((resourceValue) => {
+          if ('error' in resourceValue) return resourceValue;
+          return { value: entryResourceReducer(resourceValue.value, action, record) };
         });
+      };
+
+      let unsubscribeEntryFn = null;
+      try {
+        unsubscribeEntryFn = await this.#entryService.subscribe({ year, month }, entryCallback);
       } catch (error) {
-        // TODO: update result
+        result.set({ error: error instanceof Error ? error : new Error(String(error)) }); 
+        return result;
       }
 
-      // Setup pb subscriptions, to watch the values
-      abortSignal.addEventListener('abort', () => {
-        if (unsubscribe) {
-          unsubscribe();
-        }
-        // abort subscriptions
-      });
+      if (abortSignal.aborted) {
+        unsubscribeEntryFn();
+      } else {
+        abortSignal.addEventListener('abort', () => {
+          unsubscribeEntryFn();
+        }, { once: true });
+      }
 
       return result;
     }

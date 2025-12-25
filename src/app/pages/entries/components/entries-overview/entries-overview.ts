@@ -4,28 +4,31 @@ import { SingleEntry } from './components/single-entry/single-entry';
 import { InternalCurrencyPipe } from '@pipes/internal-currency.pipe';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { PrintError } from 'src/app/components/app-print-error/app-print-error';
 
 @Component({
   selector: 'app-entries-overview',
-  imports: [SingleEntry, InternalCurrencyPipe, MatInput, MatFormField, MatLabel, FormsModule],
+  imports: [SingleEntry, InternalCurrencyPipe, MatInput, MatFormField, MatLabel, FormsModule, PrintError],
   templateUrl: './entries-overview.html',
   styleUrl: './entries-overview.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntriesOverview {
   #budgetService = inject(BudgetService);
+  #entryResource = this.#budgetService.entryResource;
+  error = this.#entryResource.error;
+
   protected searchTerm = signal('');
 
   protected entries = computed(() => {
-    const resource = this.#budgetService.entryResource;
-    if (!resource.hasValue()) {
+    if (!this.#entryResource.hasValue()) {
       return [];
     }
 
     const term = this.searchTerm().toLowerCase().trim();
     const categories = this.#budgetService.categories();
 
-    return resource.value()
+    return this.#entryResource.value()
       .filter(entry => {
         if (!term) return true;
 

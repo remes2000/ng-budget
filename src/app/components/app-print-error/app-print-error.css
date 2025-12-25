@@ -1,0 +1,25 @@
+section {
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+  background-color: #f8d7da;
+}
+
+h2 {
+  margin-top: 0;
+  color: #721c24;
+  font-size: 1.25rem;
+}
+
+pre {
+  margin: 0;
+  padding: 0.5rem;
+  background-color: #fff;
+  border: 1px solid #dc3545;
+  border-radius: 4px;
+  overflow-x: auto;
+  color: #721c24;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.875rem;
+}
