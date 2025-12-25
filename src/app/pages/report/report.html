@@ -1,6 +1,10 @@
-<section>
-  <app-summary />
-  @for (group of groups(); track group.id) {
-    <app-group [group]="group" />
-  }
-</section>
+@if (error()) {
+  <app-print-error [error]="error()" /> 
+} @else {
+  <section>
+    <app-summary />
+    @for (group of groups(); track group.id) {
+      <app-group [group]="group" />
+    }
+  </section>
+}
