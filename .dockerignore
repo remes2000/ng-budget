@@ -1,0 +1,59 @@
+# Dependencies (will be installed via pnpm i)
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Build outputs
+dist
+.angular
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# PocketBase data (should not be in image)
+pb/pb_data
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+coverage
+*.spec.ts
+karma.conf.js
+.editorconfig
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+*.md
+
+# Environment files (sensitive data)
+.env
+.env.local
+.env.*.local
+
+# Docker files (optional - keep if you want them for reference)
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# MCP and Claude
+.mcp.json
+.claude
+
+# Misc
+*.log
+tmp
+temp
