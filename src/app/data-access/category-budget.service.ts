@@ -32,6 +32,23 @@ export class CategoryBudgetService {
     });
   }
 
+  batch(
+    { month, year }: BudgetMonth,
+    createPayload: AddCategoryBudget[],
+    updatePayload: ({ id: CategoryBudget['id'] } & UpdateCategoryBudget)[]
+  ) {
+    const batch = this.#pb.createBatch();
+    createPayload.forEach((payload) => {
+      batch.collection('category_budgets').create({
+        month, year, ...payload
+      });
+    });
+    updatePayload.forEach(({ id, ...payload }) => {
+      batch.collection('category_budgets').update(id, { ...payload });
+    });
+    return batch.send();
+  }
+
   update(id: CategoryBudget['id'], payload: UpdateCategoryBudget) {
     return this.#pb.collection('category_budgets').update(id, { ...payload });
   }

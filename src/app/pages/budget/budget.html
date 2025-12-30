@@ -1,0 +1,48 @@
+@if (error()) {
+  <app-print-error [error]="error()" />
+} @else {
+  <section>
+    <form>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th class="budget-column">Budget</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (group of groupedData(); track group.id) {
+            <tr class="group-header-row">
+              <td colspan="2" class="group-header">
+                <strong>{{ group.name }}</strong>
+              </td>
+            </tr>
+            @for (category of group.categories; track category.id) {
+              <tr>
+                <td>{{ category.name }}</td>
+                <td class="budget-column">
+                  <mat-form-field>
+                    <input
+                      matInput
+                      [field]="form[category.id]"
+                      type="number"
+                      step="0.01"
+                      />
+                  </mat-form-field>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+
+      <button mat-raised-button type="button" (click)="fillWithDefaults()" [disabled]="isSaving()">
+        Fill with defaults
+      </button>
+
+      <button mat-raised-button color="primary" type="button" (click)="submit()" [disabled]="isSaving()">
+        Submit
+      </button>
+    </form>
+  </section>
+}

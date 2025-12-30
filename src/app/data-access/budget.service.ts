@@ -182,4 +182,36 @@ export class BudgetService {
       );
     }
   }
+
+  async batchSaveBudgets(budgets: { categoryId: Category['id'], amount: number }[]): Promise<void> {
+    const createBudgets = budgets
+      .filter((b) => this.budgets().find((eb) => eb.category === b.categoryId) === undefined)
+      .filter((b) => b.amount !== 0)
+      .map(({ categoryId, amount }) => ({ category: categoryId, amount: amount * 100 }));
+
+    const updateBudgets = budgets.map((b) => {
+      const existingBudget = this.budgets().find((eb) => eb.category === b.categoryId);
+      if (existingBudget === undefined || existingBudget.amount === Math.round(b.amount * 100)) {
+        return null;
+      }
+      return { id: existingBudget.id, category: b.categoryId, amount: b.amount * 100 }
+    })
+    .filter(b => b !== null);
+
+    if (createBudgets.length === 0 && updateBudgets.length === 0) {
+      return;
+    }
+
+    try {
+      await this.#categoryBudgetService.batch(
+        { month: this.#month(), year: this.#year() },
+        createBudgets,
+        updateBudgets
+      );
+    } catch (error) {
+      // In the real world it would have been a toast
+      console.error(error);
+      alert('Save failed, see console :(');
+    }
+  }
 }

@@ -17,5 +17,14 @@
   >
     Report
   </a>
+  <a
+    mat-tab-link
+    routerLink="/budget"
+    routerLinkActive
+    #rlaBudget="routerLinkActive"
+    [active]="rlaBudget.isActive"
+  >
+    Budget
+  </a>
 </nav>
 <mat-tab-nav-panel #tabPanel />
