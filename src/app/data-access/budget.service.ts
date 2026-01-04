@@ -155,9 +155,11 @@ export class BudgetService {
 
   add(amount: number, category: string) {
     // TODO: this is hanging promise
+    // TODO: Math.round all the calculations
+    // It breaks for input 74,9
     this.#entryService.add(
       { month: this.#month(), year: this.#year() },
-      { category, amount: amount * 100 }
+      { category, amount: Math.round(amount * 100) }
     );
   }
 
