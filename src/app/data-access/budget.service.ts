@@ -1,8 +1,8 @@
 import { computed, inject, Injectable, resource, ResourceStreamItem, signal } from '@angular/core';
 import { BudgetEntry, BudgetReport, Category, CategoryBudget, Group } from '@models';
-import { CATEGORIES, GROUPS } from '../mock-data/categories';
 import { EntryService } from './entry.service';
 import { CategoryBudgetService } from './category-budget.service';
+import { CategoryGroupService } from './category-group.service';
 
 const entryResourceReducer = (
   state: BudgetReport,
@@ -62,8 +62,19 @@ const categoryBudgetReducer = (
 export class BudgetService {
   #entryService = inject(EntryService);
   #categoryBudgetService = inject(CategoryBudgetService);
+  #categoryGroupService = inject(CategoryGroupService);
   #year = signal(new Date().getFullYear());
   #month = signal(new Date().getMonth() + 1);
+
+  #staticDataResource = resource({
+    loader: async ({ abortSignal }) => {
+      const [groups, categories] = await Promise.all([
+        this.#categoryGroupService.getAllGroups({ signal: abortSignal }),
+        this.#categoryGroupService.getAllCategories({ signal: abortSignal })
+      ]);
+      return { groups, categories };
+    }
+  });
 
   reportResource = resource({
     params: () => ({ year: this.#year(), month: this.#month() }),
@@ -140,8 +151,13 @@ export class BudgetService {
     return this.reportResource.value().categoryBudgets;
   });
 
-  groups = signal<Group[]>(GROUPS).asReadonly();
-  categories = signal<Category[]>(CATEGORIES).asReadonly();
+  groups = computed<Group[]>(() => {
+    return this.#staticDataResource.value()?.groups ?? [];
+  });
+
+  categories = computed<Category[]>(() => {
+    return this.#staticDataResource.value()?.categories ?? [];
+  });
   month = this.#month.asReadonly();
   year = this.#year.asReadonly();
 

@@ -5,6 +5,8 @@ export interface TypedPocketBase extends PocketBase {
   collection(idOrName: string): RecordService // default fallback for any other collection
   collection(idOrName: 'entries'): RecordService<BudgetEntry>
   collection(idOrName: 'category_budgets'): RecordService<CategoryBudget>
+  collection(idOrName: 'groups'): RecordService<Group>
+  collection(idOrName: 'categories'): RecordService<Category>
 }
 
 export interface BudgetEntry {
@@ -39,9 +41,13 @@ export interface Category {
   type: 'income' | 'expense';
   groupId: Group['id'];
   defaultBudget: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Group {
   id: string;
   name: string;
+  createdAt: string;
+  updatedAt: string;
 }
