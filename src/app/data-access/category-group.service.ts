@@ -4,7 +4,7 @@ import { PB } from '../const';
 
 type RequestOptions = { signal?: AbortSignal };
 
-const fetchWithSignal = (signal: AbortSignal) =>
+const fetchWithSignal = (signal?: AbortSignal) =>
   (input: RequestInfo | URL, init?: RequestInit) => fetch(input, { ...init, signal });
 
 @Injectable({
@@ -16,14 +16,14 @@ export class CategoryGroupService {
   getAllGroups({ signal }: RequestOptions = {}) {
     return this.#pb.collection('groups').getFullList<Group>({
       sort: 'name',
-      fetch: fetchWithSignal(signal ?? new AbortSignal())
+      fetch: fetchWithSignal(signal)
     });
   }
 
   getAllCategories({ signal }: RequestOptions = {}) {
     return this.#pb.collection('categories').getFullList<Category>({
       sort: 'name',
-      fetch: fetchWithSignal(signal ?? new AbortSignal())
+      fetch: fetchWithSignal(signal)
     });
   }
 }

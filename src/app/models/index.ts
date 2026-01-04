@@ -41,13 +41,13 @@ export interface Category {
   type: 'income' | 'expense';
   groupId: Group['id'];
   defaultBudget: number;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Group {
   id: string;
   name: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
