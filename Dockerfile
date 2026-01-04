@@ -13,7 +13,7 @@ RUN npm install -g pnpm@${PNPM_VERSION}
 
 # Step 2 setup PocketBase
 
-ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip /tmp/pb.zip
+ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_arm64.zip /tmp/pb.zip
 RUN unzip /tmp/pb.zip -d /pb/
 
 COPY ./pb/pb_migrations /pb/pb_migrations
