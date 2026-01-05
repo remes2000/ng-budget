@@ -12,8 +12,8 @@ export function sortGroupsByPreference(
 
 export function sortCategoriesByGroupPreference(
   categories: Category[],
-  groupId: string,
-  preferences: Preferences | null
+  preferences: Preferences | null,
+  groupId: string
 ): Category[] {
   const preferredOrder =
     preferences?.config?.reportOrdering?.categoryOrder?.[groupId];

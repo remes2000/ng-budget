@@ -144,29 +144,23 @@ export class BudgetService {
     stream: async ({ abortSignal }) => {
       const result = signal<ResourceStreamItem<Preferences | null>>({ value: null });
 
-      // Fetch initial preferences
       try {
-        const prefs = await this.#preferencesService.getPreferences({ signal: abortSignal });
-        result.set({ value: prefs });
+        const preferences = await this.#preferencesService.getPreferences({ signal: abortSignal });
+        result.set({ value: preferences });
       } catch (error) {
         result.set({ error: error instanceof Error ? error : new Error(String(error)) });
         return result;
       }
 
-      // Subscribe to preference changes
       const callback = ({ action, record }: { action: string, record: Preferences }) => {
         result.update((resourceValue) => {
           if ('error' in resourceValue) return resourceValue;
-          // For preferences, any action (create/update/delete) replaces the entire value
-          if (action === 'delete') {
-            return { value: null };
-          }
+          if (action === 'delete') return { value: null };
           return { value: record };
         });
       };
 
       let unsubscribeFn: null | (() => void) = null;
-
       try {
         unsubscribeFn = await this.#preferencesService.subscribe(callback);
       } catch (error) {
@@ -174,7 +168,6 @@ export class BudgetService {
         return result;
       }
 
-      // Cleanup subscription when resource is destroyed
       if (abortSignal.aborted) {
         unsubscribeFn();
       } else {
@@ -209,6 +202,16 @@ export class BudgetService {
     return this.#staticDataResource.value()?.categories ?? [];
   });
 
+  #categoriesByGroup = computed(() => {
+    return this.categories().reduce((map, category) => {
+      if (!map.has(category.groupId)) {
+        map.set(category.groupId, []);
+      }
+      map.get(category.groupId)?.push(category);
+      return map;
+    }, new Map<Group['id'], Category[]>);
+  });
+
   preferences = computed(() => {
     if (!this.preferencesResource.hasValue()) {
       return null;
@@ -223,13 +226,9 @@ export class BudgetService {
   });
 
   getSortedCategoriesFor(groupId: string): Category[] {
-    const categories = this.categories();
     const preferences = this.preferences();
-    return sortCategoriesByGroupPreference(
-      categories.filter(c => c.groupId === groupId),
-      groupId,
-      preferences
-    );
+    const categories = this.#categoriesByGroup().get(groupId) ?? [];
+    return sortCategoriesByGroupPreference(categories, preferences, groupId);
   }
 
   month = this.#month.asReadonly();
