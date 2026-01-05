@@ -18,10 +18,9 @@ export class GroupComponent {
   groupId = computed(() => this.group().id);
   #budgetService = inject(BudgetService);
   #computationService = inject(ComputationService);
-  categories = computed(() => {
-    const allCategories = this.#budgetService.categories();
-    return allCategories.filter(category => category.groupId === this.groupId());
-  });
+  categories = computed(() =>
+    this.#budgetService.getSortedCategoriesFor(this.group().id)
+  );
   budgetedTotal = computed(() => this.#computationService.groupBudget(this.groupId()));
   actualTotal = computed(() => this.#computationService.groupSpending(this.groupId()));
   difference = computed(() => this.budgetedTotal() - this.actualTotal());

@@ -7,6 +7,7 @@ export interface TypedPocketBase extends PocketBase {
   collection(idOrName: 'category_budgets'): RecordService<CategoryBudget>
   collection(idOrName: 'groups'): RecordService<Group>
   collection(idOrName: 'categories'): RecordService<Category>
+  collection(idOrName: 'preferences'): RecordService<Preferences>
 }
 
 export interface BudgetEntry {
@@ -50,4 +51,20 @@ export interface Group {
   name: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Preferences {
+  id: string;
+  config: PreferencesConfig;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PreferencesConfig {
+  reportOrdering?: ReportOrdering;
+}
+
+export interface ReportOrdering {
+  groupOrder?: string[];
+  categoryOrder?: Record<string, string[]>;
 }
