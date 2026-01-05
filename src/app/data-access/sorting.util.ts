@@ -26,15 +26,20 @@ function sortItemsByPreference<T extends { id: string; name: string }>(
   items: T[],
   preferredIds: string[]
 ): T[] {
-  // Items in preference list (preserves order)
-  const preferredItems = preferredIds
-    .map(id => items.find(item => item.id === id))
-    .filter((item): item is T => item !== undefined);
+  const orderedItems: T[] = [];
+  const itemMap = items.reduce((map, i) => map.set(i.id, i), new Map<T['id'], T>);
+  const preferredIdsSet = new Set(preferredIds);
 
-  // Remaining items (alphabetical fallback)
+  for (const preferredId of preferredIds) {
+    const item = itemMap.get(preferredId);
+    if (item !== undefined) {
+      orderedItems.push(item);
+    }
+  }
+
   const remainingItems = items
-    .filter(item => !preferredIds.includes(item.id))
+    .filter(({ id }) => !preferredIdsSet.has(id))
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  return [...preferredItems, ...remainingItems];
+  return [...orderedItems, ...remainingItems];
 }
