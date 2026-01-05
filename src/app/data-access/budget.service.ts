@@ -1,8 +1,10 @@
 import { computed, inject, Injectable, resource, ResourceStreamItem, signal } from '@angular/core';
-import { BudgetEntry, BudgetReport, Category, CategoryBudget, Group } from '@models';
+import { BudgetEntry, BudgetReport, Category, CategoryBudget, Group, Preferences } from '@models';
 import { EntryService } from './entry.service';
 import { CategoryBudgetService } from './category-budget.service';
 import { CategoryGroupService } from './category-group.service';
+import { PreferencesService } from './preferences.service';
+import { sortGroupsByPreference, sortCategoriesByGroupPreference } from './sorting.util';
 
 const entryResourceReducer = (
   state: BudgetReport,
@@ -63,6 +65,7 @@ export class BudgetService {
   #entryService = inject(EntryService);
   #categoryBudgetService = inject(CategoryBudgetService);
   #categoryGroupService = inject(CategoryGroupService);
+  #preferencesService = inject(PreferencesService);
   #year = signal(new Date().getFullYear());
   #month = signal(new Date().getMonth() + 1);
 
@@ -137,6 +140,53 @@ export class BudgetService {
     }
   });
 
+  preferencesResource = resource({
+    stream: async ({ abortSignal }) => {
+      const result = signal<ResourceStreamItem<Preferences | null>>({ value: null });
+
+      // Fetch initial preferences
+      try {
+        const prefs = await this.#preferencesService.getPreferences({ signal: abortSignal });
+        result.set({ value: prefs });
+      } catch (error) {
+        result.set({ error: error instanceof Error ? error : new Error(String(error)) });
+        return result;
+      }
+
+      // Subscribe to preference changes
+      const callback = ({ action, record }: { action: string, record: Preferences }) => {
+        result.update((resourceValue) => {
+          if ('error' in resourceValue) return resourceValue;
+          // For preferences, any action (create/update/delete) replaces the entire value
+          if (action === 'delete') {
+            return { value: null };
+          }
+          return { value: record };
+        });
+      };
+
+      let unsubscribeFn: null | (() => void) = null;
+
+      try {
+        unsubscribeFn = await this.#preferencesService.subscribe(callback);
+      } catch (error) {
+        result.set({ error: error instanceof Error ? error : new Error(String(error)) });
+        return result;
+      }
+
+      // Cleanup subscription when resource is destroyed
+      if (abortSignal.aborted) {
+        unsubscribeFn();
+      } else {
+        abortSignal.addEventListener('abort', () => {
+          unsubscribeFn?.();
+        }, { once: true });
+      }
+
+      return result;
+    }
+  });
+
   entries = computed<BudgetEntry[]>(() => {
     if (!this.reportResource.hasValue()) {
       return [];
@@ -158,6 +208,30 @@ export class BudgetService {
   categories = computed<Category[]>(() => {
     return this.#staticDataResource.value()?.categories ?? [];
   });
+
+  preferences = computed(() => {
+    if (!this.preferencesResource.hasValue()) {
+      return null;
+    }
+    return this.preferencesResource.value();
+  });
+
+  sortedGroups = computed(() => {
+    const groups = this.groups();
+    const preferences = this.preferences();
+    return sortGroupsByPreference(groups, preferences);
+  });
+
+  getSortedCategoriesFor(groupId: string): Category[] {
+    const categories = this.categories();
+    const preferences = this.preferences();
+    return sortCategoriesByGroupPreference(
+      categories.filter(c => c.groupId === groupId),
+      groupId,
+      preferences
+    );
+  }
+
   month = this.#month.asReadonly();
   year = this.#year.asReadonly();
 

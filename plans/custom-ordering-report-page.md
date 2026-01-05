@@ -359,3 +359,6 @@ export class GroupComponent {
 - Better for single-user app
 - Easier to version/backup entire config
 - Reduces database queries (single fetch)
+
+
+Do not create pocketbase migration - it's already done.
