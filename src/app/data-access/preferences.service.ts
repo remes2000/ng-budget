@@ -12,10 +12,11 @@ const fetchWithSignal = (signal?: AbortSignal) =>
 export class PreferencesService {
   #pb = inject(PB);
 
-  getPreferences({ signal }: RequestOptions = {}) {
-    return this.#pb.collection('preferences').getFirstListItem<Preferences>('', {
+  async getPreferences({ signal }: RequestOptions = {}): Promise<Preferences | null> {
+    const result = await this.#pb.collection('preferences').getList<Preferences>(1, 1, {
       fetch: fetchWithSignal(signal)
     });
+    return result.items[0] ?? null;
   }
 
   subscribe(callback: (data: RecordSubscription<Preferences>) => void) {
