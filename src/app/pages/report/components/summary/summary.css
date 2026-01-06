@@ -17,3 +17,6 @@ td:first-child {
   text-align: left;
 }
 
+.value.reality {
+  font-size: 1.5rem;
+}
