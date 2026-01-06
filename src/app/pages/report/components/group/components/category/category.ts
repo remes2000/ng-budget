@@ -19,7 +19,7 @@ export class CategoryComponent {
   #budgetService = inject(BudgetService);
   #computationService = inject(ComputationService);
   budgetedAmount = computed(() => this.#computationService.categoryBudget(this.categoryId()));
-  actualAmount = computed(() => this.#computationService.categorySpending(this.categoryId()));
+  actualAmount = computed(() => this.#computationService.sumEntriesForCategory(this.categoryId()));
   difference = computed(() => this.budgetedAmount() - this.actualAmount());
 
   updateBudget(newAmount: number): void {

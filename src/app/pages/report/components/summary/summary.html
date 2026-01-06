@@ -6,17 +6,30 @@
     <table>
       <tbody>
         <tr>
-          <td class="label">Budgeted:</td>
-          <td class="value">{{ budgeted() | internalCurrency }}</td>
+          <td class="label">Expected earnings:</td>
+          <td class="value">{{ expectedEarnings() | internalCurrency }}</td>
+        </tr>
+        <tr>
+          <td class="label">Expected spending:</td>
+          <td class="value">{{ expectedSpending() | internalCurrency }}</td>
+        </tr>
+        <tr>
+          <td class="label">Goal:</td>
+          <td class="value">{{ goal() | internalCurrency }}</td>
+        </tr>
+        <tr>
+          <td class="label">Actual Earnings:</td>
+          <td class="value">{{ actualEarnings() | internalCurrency }}</td>
         </tr>
         <tr>
           <td class="label">Actual Spending:</td>
-          <td class="value">{{ actual() | internalCurrency }}</td>
+          <td class="value">{{ actualSpending() | internalCurrency }}</td>
         </tr>
         <tr>
-          <td class="label">Difference:</td>
-          <td class="value" [colorAmount]="difference()">{{ difference() | internalCurrency }}</td>
+          <td class="label">Reality: </td>
+          <td class="value reality" [colorAmount]="reality()">{{ reality() | internalCurrency }}</td>
         </tr>
+
         <tr>
           <td class="label">Budget Used:</td>
           <td class="value">{{ percentageUsed() | number: '1.1-1' }}%</td>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { ComputationService } from '@data-access/computation.service';
@@ -15,9 +15,14 @@ import { ColorAmount } from 'src/app/directives/color-amount';
 export class SummaryComponent {
   #computationService = inject(ComputationService);
 
-  budgeted = computed(() => this.#computationService.totalBudgeted());
-  actual = computed(() => this.#computationService.totalSpent());
-  difference = computed(() => this.#computationService.totalDifference());
-  percentageUsed = computed(() => this.#computationService.percentageUsed());
-  remaining = computed(() => this.#computationService.remainingToSpend());
+  expectedSpending = this.#computationService.expectedSpending;
+  expectedEarnings = this.#computationService.expectedEarnings;
+  goal = this.#computationService.goal;
+
+  actualSpending = this.#computationService.totalSpent;
+  actualEarnings = this.#computationService.totalEarned;
+  reality = this.#computationService.reality;
+
+  percentageUsed = this.#computationService.budgetUsage;
+  remaining = this.#computationService.remainingToSpend;
 }
