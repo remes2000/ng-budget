@@ -50,13 +50,13 @@ export class ComputationService {
     return sum;
   })
 
-  expectedEarning = computed(() => {
+  expectedEarnings = computed(() => {
     let sum = 0;
     this.#incomeCategories().forEach((cat) => sum += this.categoryBudget(cat.id));
     return sum;
   });
 
-  goal = computed(() => this.expectedEarning() - this.expectedSpending());
+  goal = computed(() => this.expectedEarnings() - this.expectedSpending());
 
   totalSpent = computed(() => {
     let sum = 0;

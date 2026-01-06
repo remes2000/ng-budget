@@ -16,7 +16,7 @@ export class SummaryComponent {
   #computationService = inject(ComputationService);
 
   expectedSpending = this.#computationService.expectedSpending;
-  expectedEarnings = this.#computationService.expectedEarning;
+  expectedEarnings = this.#computationService.expectedEarnings;
   goal = this.#computationService.goal;
 
   actualSpending = this.#computationService.totalSpent;
