@@ -1,10 +1,13 @@
-import { computed, inject, Injectable, resource, ResourceStreamItem, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, linkedSignal, resource, ResourceStreamItem, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BudgetEntry, BudgetReport, Category, CategoryBudget, Group, Preferences } from '@models';
 import { EntryService } from './entry.service';
 import { CategoryBudgetService } from './category-budget.service';
 import { CategoryGroupService } from './category-group.service';
 import { PreferencesService } from './preferences.service';
 import { sortGroupsByPreference, sortCategoriesByGroupPreference } from './sorting.util';
+import { skip } from 'rxjs';
 
 const entryResourceReducer = (
   state: BudgetReport,
@@ -66,8 +69,44 @@ export class BudgetService {
   #categoryBudgetService = inject(CategoryBudgetService);
   #categoryGroupService = inject(CategoryGroupService);
   #preferencesService = inject(PreferencesService);
-  #year = signal(new Date().getFullYear());
-  #month = signal(new Date().getMonth() + 1);
+  #router = inject(Router);
+  #activatedRoute = inject(ActivatedRoute);
+  #queryParams = toSignal(
+    this.#activatedRoute.queryParams.pipe(skip(1)),
+    { initialValue: Object.fromEntries(new URLSearchParams(window.location.search)) } 
+  );
+
+  #parsedYearParam = computed(() => {
+    const params = this.#queryParams();
+    const year = params['year'] ? parseInt(params['year'], 10) : null;
+    // I should be dead by the time it breaks :v
+    const isValidYear = year !== null && !isNaN(year) && year >= 1410 && year <= 2120;
+    return isValidYear ? year : new Date().getFullYear();
+  });
+
+  #parsedMonthParam = computed(() => {
+    const params = this.#queryParams();
+    const month = params['month'] ? parseInt(params['month'], 10) : null;
+    const isValidMonth = month !== null && !isNaN(month) && month >= 1 && month <= 12;
+    return isValidMonth ? month : new Date().getMonth() + 1;
+  });
+
+  #year = linkedSignal(() => this.#parsedYearParam());
+  #month = linkedSignal(() => this.#parsedMonthParam());
+
+  constructor() {
+    effect(() => {
+      const month = this.#month();
+      const year = this.#year();
+
+      // TODO: This is too fast and it redirect to the main page
+      this.#router.navigate([], {
+        relativeTo: this.#activatedRoute,
+        queryParams: { month, year },
+        queryParamsHandling: 'merge'
+      });
+    });
+  }
 
   #staticDataResource = resource({
     loader: async ({ abortSignal }) => {

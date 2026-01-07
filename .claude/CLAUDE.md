@@ -39,3 +39,11 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+## Running environment
+My application runs on http://localhost:4200
+
+PocketBase admin page runs on http://localhost:8090/_/
+
+## Package Manager
+This project uses **pnpm** as its package manager. Always use `pnpm` instead of `npm` or `yarn` for all package management tasks.
